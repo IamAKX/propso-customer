@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "234034167846",
+    "project_id": "propsoweb",
+    "storage_bucket": "propsoweb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:234034167846:android:3452f8334d11ea290626e7",
+        "android_client_info": {
+          "package_name": "com.propertycp.customer.propertycp_customer"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB97IlRY7c7IL9SKUKcL3D48g7aQVT9j08"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
