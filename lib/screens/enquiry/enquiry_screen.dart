@@ -1,6 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:propertycp_customer/utils/theme.dart';
 import 'package:propertycp_customer/widgets/gaps.dart';
+import 'package:propertycp_customer/widgets/responsive.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/user_model.dart';
@@ -46,7 +48,11 @@ class _EnquiryScreenState extends State<EnquiryScreen> {
         title: const Text('Enquiry'),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(defaultPadding),
+        padding: Responsive.isDesktop(context)
+            ? EdgeInsets.symmetric(
+                vertical: defaultPadding,
+                horizontal: MediaQuery.of(context).size.width * 0.2)
+            : const EdgeInsets.all(defaultPadding),
         child: Column(
           children: [
             Expanded(

@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:gallery_image_viewer/gallery_image_viewer.dart';
 import 'package:share_plus/share_plus.dart';
@@ -8,6 +9,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:whatsapp_share/whatsapp_share.dart';
 
 import '../utils/theme.dart';
+import 'responsive.dart';
 
 class CustomImageViewer extends StatefulWidget {
   const CustomImageViewer({super.key, required this.link});
@@ -54,8 +56,8 @@ class _CustomImageViewerState extends State<CustomImageViewer> {
     log(widget.link.toString());
     return GridView.builder(
       padding: const EdgeInsets.all(defaultPadding / 2),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
+      gridDelegate:  SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: Responsive.isDesktop(context) ? 6 : 2,
         childAspectRatio: 1.0,
         crossAxisSpacing: defaultPadding / 2,
         mainAxisSpacing: defaultPadding / 2,

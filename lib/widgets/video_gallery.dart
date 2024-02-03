@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:whatsapp_share/whatsapp_share.dart';
@@ -6,6 +7,7 @@ import 'package:whatsapp_share/whatsapp_share.dart';
 import '../models/property_media.dart';
 import '../utils/theme.dart';
 import 'custom_video_player.dart';
+import 'responsive.dart';
 
 class VideoGallery extends StatefulWidget {
   const VideoGallery({super.key, required this.link});
@@ -50,8 +52,12 @@ class _VideoGalleryState extends State<VideoGallery> {
   getBody() {
     return GridView.builder(
       padding: const EdgeInsets.all(defaultPadding / 2),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 1,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: Responsive.isDesktop(context)
+            ? 4
+            : Responsive.isTablet(context)
+                ? 2
+                : 1,
         childAspectRatio: 16 / 9,
         crossAxisSpacing: defaultPadding / 2,
         mainAxisSpacing: defaultPadding / 2,

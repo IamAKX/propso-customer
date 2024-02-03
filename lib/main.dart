@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:propertycp_customer/firebase_options.dart';
@@ -8,8 +9,10 @@ import 'package:propertycp_customer/models/user_model.dart';
 import 'package:propertycp_customer/screens/home_container/home_container.dart';
 import 'package:propertycp_customer/screens/onboarding/login_screen.dart';
 import 'package:propertycp_customer/services/api_service.dart';
+import 'package:propertycp_customer/utils/helper_method.dart';
 import 'package:propertycp_customer/utils/preference_key.dart';
 import 'package:propertycp_customer/utils/router.dart';
+import 'package:propertycp_customer/widgets/responsive.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -70,6 +73,18 @@ class MyApp extends StatelessWidget {
             bodyColor: textColorDark,
             displayColor: textColorDark,
           ),
+          appBarTheme: AppBarTheme(
+            centerTitle: Responsive.isDesktop(context) ? false : true,
+            backgroundColor:
+                Responsive.isDesktop(context) ? Colors.white : primary,
+            titleSpacing: getAppbarSpacing(context),
+            iconTheme: IconThemeData(
+                color: Responsive.isDesktop(context) ? primary : Colors.white),
+            titleTextStyle: TextStyle(
+              color: Responsive.isDesktop(context) ? primary : Colors.white,
+              fontSize: Responsive.isDesktop(context) ? 30 : 25,
+            ),
+          ),
         ),
         home: getHomeScreen(),
         onGenerateRoute: NavRoute.generatedRoute,
@@ -80,7 +95,11 @@ class MyApp extends StatelessWidget {
   getHomeScreen() {
     if (prefs.getBool(SharedpreferenceKey.firstTimeAppOpen) ?? true) {
       prefs.setBool(SharedpreferenceKey.firstTimeAppOpen, false);
-      return const AppIntroScreen();
+      if (kIsWeb) {
+        return const LoginScreen();
+      } else {
+        return const AppIntroScreen();
+      }
     } else if (userModel == null || userModel?.id == null) {
       return const LoginScreen();
     }

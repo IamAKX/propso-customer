@@ -1,13 +1,18 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:propertycp_customer/models/list/property_list.dart';
+import 'package:propertycp_customer/utils/theme.dart';
 import 'package:propertycp_customer/widgets/no_property_found.dart';
 import 'package:propertycp_customer/widgets/property_card.dart';
+import 'package:propertycp_customer/widgets/responsive.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/user_model.dart';
 import '../../services/api_service.dart';
 import '../../services/snakbar_service.dart';
 import '../../utils/preference_key.dart';
+import '../../widgets/gaps.dart';
+import '../home_container/home_container.dart';
 
 class PropertyListingScreen extends StatefulWidget {
   const PropertyListingScreen({super.key, required this.params});
@@ -51,6 +56,17 @@ class _PropertyListingScreenState extends State<PropertyListingScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.params.elementAt(1) ?? ''),
+        actions: [
+          if (Responsive.isDesktop(context))
+            IconButton(
+              onPressed: () {
+                Navigator.pushNamedAndRemoveUntil(
+                    context, HomeContainer.routePath, (route) => false);
+              },
+              icon: Icon(Icons.home),
+            ),
+          if (Responsive.isDesktop(context)) horizontalGap(defaultPadding * 2),
+        ],
       ),
       body: _api.status == ApiStatus.loading
           ? const Center(
@@ -64,11 +80,34 @@ class _PropertyListingScreenState extends State<PropertyListingScreen> {
     if (propertyListModel?.data?.isEmpty ?? true) {
       return const NoPropertyFound();
     }
-    return ListView.builder(
-      itemCount: propertyListModel?.data?.length ?? 0,
-      itemBuilder: (context, index) => PropertyCard(
-          property: propertyListModel?.data?.elementAt(index),
-          reload: loadScreen),
+    return Responsive(
+      mobile: ListView.builder(
+        itemCount: propertyListModel?.data?.length ?? 0,
+        itemBuilder: (context, index) => PropertyCard(
+            property: propertyListModel?.data?.elementAt(index),
+            reload: loadScreen),
+      ),
+      desktop: Container(
+        padding: EdgeInsets.symmetric(
+            horizontal: MediaQuery.of(context).size.width * 0.2),
+        child: Scrollbar(
+          child: GridView.count(
+            crossAxisCount: 3,
+            padding: const EdgeInsets.all(defaultPadding / 2),
+            shrinkWrap: true,
+            mainAxisSpacing: defaultPadding / 2,
+            crossAxisSpacing: defaultPadding / 2,
+            children: propertyListModel!.data!
+                .map(
+                  (e) => PropertyCard(
+                    property: e,
+                    reload: loadScreen,
+                  ),
+                )
+                .toList(),
+          ),
+        ),
+      ),
     );
   }
 }

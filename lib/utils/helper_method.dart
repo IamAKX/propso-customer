@@ -1,5 +1,9 @@
 import 'dart:math';
 
+import 'package:flutter/material.dart';
+import 'package:propertycp_customer/utils/theme.dart';
+import 'package:propertycp_customer/widgets/responsive.dart';
+
 import '../models/user_model.dart';
 
 String getOTPCode() {
@@ -18,4 +22,12 @@ int containsUser(Map<UserModel, int>? userMap, int id) {
     if (userModel.id == id) count++;
   }
   return count;
+}
+
+double getAppbarSpacing(BuildContext context) {
+  if (Responsive.isDesktop(context)) {
+    return defaultPadding * 2;
+  } else {
+    return defaultPadding;
+  }
 }

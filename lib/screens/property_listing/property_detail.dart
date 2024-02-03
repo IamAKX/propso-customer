@@ -1,9 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:propertycp_customer/models/property_media.dart';
 import 'package:propertycp_customer/screens/enquiry/enquiry_screen.dart';
+import 'package:propertycp_customer/screens/home_container/home_container.dart';
 import 'package:propertycp_customer/utils/colors.dart';
 import 'package:propertycp_customer/utils/constants.dart';
 import 'package:propertycp_customer/utils/enum.dart';
@@ -11,6 +13,7 @@ import 'package:propertycp_customer/utils/theme.dart';
 import 'package:propertycp_customer/widgets/custom_image_viewer.dart';
 import 'package:propertycp_customer/widgets/custom_video_player.dart';
 import 'package:propertycp_customer/widgets/gaps.dart';
+import 'package:propertycp_customer/widgets/responsive.dart';
 import 'package:propertycp_customer/widgets/video_gallery.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -85,6 +88,15 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
           //       },
           //       icon: Icon(Icons.edit)),
           // ),
+          if (Responsive.isDesktop(context))
+            IconButton(
+              onPressed: () {
+                Navigator.pushNamedAndRemoveUntil(
+                    context, HomeContainer.routePath, (route) => false);
+              },
+              icon: Icon(Icons.home),
+            ),
+          if (Responsive.isDesktop(context)) horizontalGap(defaultPadding),
           IconButton(
             onPressed: () {
               if (prefs
@@ -111,6 +123,7 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
                     Icons.favorite_border_outlined,
                   ),
           ),
+          if (Responsive.isDesktop(context)) horizontalGap(defaultPadding * 2),
         ],
       ),
       body: _api.status == ApiStatus.loading
@@ -140,6 +153,11 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
         header(context),
         Expanded(
           child: ListView(
+            padding: EdgeInsets.symmetric(
+              horizontal: Responsive.isMobile(context)
+                  ? 0
+                  : MediaQuery.of(context).size.width * 0.2,
+            ),
             children: [
               Card(
                 elevation: 5,

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:propertycp_customer/models/user_model.dart';
@@ -6,6 +7,7 @@ import 'package:propertycp_customer/utils/colors.dart';
 import 'package:propertycp_customer/utils/constants.dart';
 import 'package:propertycp_customer/utils/preference_key.dart';
 import 'package:propertycp_customer/widgets/gaps.dart';
+import 'package:propertycp_customer/widgets/responsive.dart';
 import 'package:propertycp_customer/widgets/user_profile_image.dart';
 import 'package:provider/provider.dart';
 
@@ -55,9 +57,13 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   getBody(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Column(
       children: [
         Container(
+          padding: Responsive.isMobile(context)
+              ? EdgeInsets.zero
+              : EdgeInsets.symmetric(horizontal: size.width * 0.2),
           decoration: const BoxDecoration(
             gradient: LinearGradient(
               colors: [secondary, Colors.purple],
@@ -74,6 +80,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 padding: const EdgeInsets.symmetric(
                     horizontal: defaultPadding, vertical: defaultPadding / 2),
                 child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     RichText(
                       text: TextSpan(
@@ -100,8 +107,22 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     const Spacer(),
+                    if (Responsive.isDesktop(context))
+                      IconButton(
+                        onPressed: () {
+                          widget.switchTabs(1);
+                        },
+                        icon: const Icon(
+                          Icons.favorite_border,
+                          size: 35,
+                          color: Colors.white,
+                        ),
+                      ),
+                    if (Responsive.isDesktop(context)) horizontalGap(defaultPadding),
                     InkWell(
-                      onTap: () {},
+                      onTap: () {
+                        widget.switchTabs(2);
+                      },
                       child: ClipRRect(
                           borderRadius:
                               BorderRadius.circular(homePageProfilePic),
@@ -169,48 +190,53 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
         ),
-        GridView.count(
-          padding: const EdgeInsets.all(defaultPadding / 2),
-          shrinkWrap: true,
-          mainAxisSpacing: defaultPadding / 2,
-          crossAxisSpacing: defaultPadding / 2,
-          crossAxisCount: 3,
-          children: propertyType
-              .map((e) => InkWell(
-                    onTap: () {
-                      Navigator.pushNamed(
-                          context, PropertyListingScreen.routePath,
-                          arguments: [selectedOption, e.name]);
-                    },
-                    child: Card(
-                      elevation: 2,
-                      color: Colors.white,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Image.asset(
-                            e.iconPath!,
-                            width: 40,
-                            color: Colors.indigo,
-                          ),
-                          verticalGap(defaultPadding / 2),
-                          Flexible(
-                            child: Text(
-                              e.name!,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .labelLarge
-                                  ?.copyWith(
-                                    color: Colors.indigo,
-                                  ),
-                              textAlign: TextAlign.center,
+        Container(
+          margin: Responsive.isMobile(context)
+              ? EdgeInsets.zero
+              : EdgeInsets.symmetric(horizontal: size.width * 0.2),
+          child: GridView.count(
+            padding: const EdgeInsets.all(defaultPadding / 2),
+            shrinkWrap: true,
+            mainAxisSpacing: defaultPadding / 2,
+            crossAxisSpacing: defaultPadding / 2,
+            crossAxisCount: Responsive.isDesktop(context) ? 5 : 3,
+            children: propertyType
+                .map((e) => InkWell(
+                      onTap: () {
+                        Navigator.pushNamed(
+                            context, PropertyListingScreen.routePath,
+                            arguments: [selectedOption, e.name]);
+                      },
+                      child: Card(
+                        elevation: 2,
+                        color: Colors.white,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              e.iconPath!,
+                              width: 40,
+                              color: Colors.indigo,
                             ),
-                          ),
-                        ],
+                            verticalGap(defaultPadding / 2),
+                            Flexible(
+                              child: Text(
+                                e.name!,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .labelLarge
+                                    ?.copyWith(
+                                      color: Colors.indigo,
+                                    ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ))
-              .toList(),
+                    ))
+                .toList(),
+          ),
         )
       ],
     );

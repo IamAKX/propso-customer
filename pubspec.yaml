@@ -65,7 +65,7 @@ flutter_native_splash:
   android_12:
     image: assets/logos/logo.png
     color: "#ffffff"
-  web_image_mode: cover
+  web_image_mode: center
   android_gravity: fill
   ios_content_mode: scaleToFill
 # flutter pub run flutter_native_splash:create

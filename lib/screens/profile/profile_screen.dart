@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
@@ -12,6 +13,7 @@ import 'package:propertycp_customer/screens/profile/users/user_list.dart';
 import 'package:propertycp_customer/services/storage_service.dart';
 import 'package:propertycp_customer/utils/colors.dart';
 import 'package:propertycp_customer/widgets/gaps.dart';
+import 'package:propertycp_customer/widgets/responsive.dart';
 import 'package:propertycp_customer/widgets/user_profile_image.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -63,6 +65,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Profile'),
+        actions: Responsive.isDesktop(context)
+            ? [
+                TextButton(
+                  onPressed: () {
+                    widget.switchTabs(0);
+                  },
+                  child: const Text('Home'),
+                ),
+                horizontalGap(20),
+                TextButton(
+                  onPressed: () {
+                    widget.switchTabs(1);
+                  },
+                  child: const Text('Favourite'),
+                ),
+                horizontalGap(40),
+              ]
+            : [],
       ),
       body: getBody(context),
     );
@@ -78,6 +98,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
         Expanded(
           child: ListView(
+            padding: EdgeInsets.symmetric(
+              horizontal: Responsive.isMobile(context)
+                  ? 0
+                  : MediaQuery.of(context).size.width * 0.2,
+            ),
             children: [
               // ListTile(
               //   leading: const Icon(
@@ -264,161 +289,172 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Padding header(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(defaultPadding),
-      child: Row(
-        children: [
-          Expanded(
-            child: Stack(
-              alignment: Alignment.centerLeft,
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(settingsPageUserIconSize),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(100),
-                    child: UserProfileImage(
-                      userModel: userModel,
-                      height: 100,
-                      width: 100,
-                    ),
-                  ),
-                ),
-                Positioned(
-                  bottom: 1,
-                  left: 75,
-                  child: PopupMenuButton(
-                    itemBuilder: (context) {
-                      return const [
-                        PopupMenuItem(
-                          value: 'edit',
-                          child: Text('Edit profile image'),
-                        ),
-                        PopupMenuItem(
-                          value: 'delete',
-                          child: Text('Delete profile image'),
-                        ),
-                      ];
-                    },
-                    enabled: !isImageUploading,
-                    onSelected: (value) async {
-                      switch (value) {
-                        case 'edit':
-                          final ImagePicker picker = ImagePicker();
-                          final XFile? image = await picker.pickImage(
-                              source: ImageSource.gallery);
-                          if (image != null) {
-                            File imageFile = File(image.path);
-                            setState(() {
-                              isImageUploading = true;
-                            });
-                            _storageProvider
-                                .uploadProfileImage(
-                                    imageFile, userModel?.id ?? -1)
-                                .then((value) async {
-                              userModel?.image = value;
-                              _api
-                                  .updateUser(userModel?.toMap() ?? {},
-                                      userModel?.id ?? -1)
-                                  .then((value) {
-                                isImageUploading = false;
-                                loadScreen();
-                              });
-                            });
-                          }
-                          return;
-                        case 'delete':
-                          userModel?.image = '';
-                          _api
-                              .updateUser(
-                                  userModel?.toMap() ?? {}, userModel?.id ?? -1)
-                              .then((value) {
-                            if (value) {
-                              loadScreen();
-                              SnackBarService.instance
-                                  .showSnackBarSuccess('Profile image removed');
-                            } else {
-                              SnackBarService.instance
-                                  .showSnackBarError('Failed to update');
-                            }
-                          });
-                          return;
-                      }
-                    },
-                    child: Container(
-                      width: 30,
-                      height: 30,
-                      decoration: BoxDecoration(
-                        color: secondary,
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: Colors.white,
-                          width: 3,
-                        ),
-                      ),
-                      child: const Icon(
-                        Icons.edit,
-                        color: Colors.white,
-                        size: 10,
+  Container header(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(
+          horizontal: Responsive.isMobile(context)
+              ? 0
+              : MediaQuery.of(context).size.width * 0.2),
+      child: Padding(
+        padding: const EdgeInsets.all(defaultPadding),
+        child: Row(
+          children: [
+            Expanded(
+              child: Stack(
+                alignment: Alignment.centerLeft,
+                children: [
+                  ClipRRect(
+                    borderRadius:
+                        BorderRadius.circular(settingsPageUserIconSize),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(100),
+                      child: UserProfileImage(
+                        userModel: userModel,
+                        height: 100,
+                        width: 100,
                       ),
                     ),
                   ),
-                ),
-              ],
-            ),
-          ),
-          Expanded(
-            flex: 2,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Row(
-                  children: [
-                    horizontalGap(defaultPadding),
-                    Expanded(
-                      child: Text(
-                        userModel?.fullName ?? '',
-                        style:
-                            Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () {
-                        showEditNamePopup(context);
+                  Positioned(
+                    bottom: 1,
+                    left: 75,
+                    child: PopupMenuButton(
+                      itemBuilder: (context) {
+                        return const [
+                          PopupMenuItem(
+                            value: 'edit',
+                            child: Text('Edit profile image'),
+                          ),
+                          PopupMenuItem(
+                            value: 'delete',
+                            child: Text('Delete profile image'),
+                          ),
+                        ];
                       },
-                      icon: const Icon(
-                        Icons.edit,
-                        size: 20,
-                        color: secondary,
+                      enabled: !isImageUploading,
+                      onSelected: (value) async {
+                        switch (value) {
+                          case 'edit':
+                            final ImagePicker picker = ImagePicker();
+                            final XFile? image = await picker.pickImage(
+                                source: ImageSource.gallery);
+                            if (image != null) {
+                              File imageFile = File(image.path);
+                              setState(() {
+                                isImageUploading = true;
+                              });
+                              _storageProvider
+                                  .uploadProfileImage(
+                                      imageFile, userModel?.id ?? -1)
+                                  .then((value) async {
+                                userModel?.image = value;
+                                _api
+                                    .updateUser(userModel?.toMap() ?? {},
+                                        userModel?.id ?? -1)
+                                    .then((value) {
+                                  isImageUploading = false;
+                                  loadScreen();
+                                });
+                              });
+                            }
+                            return;
+                          case 'delete':
+                            userModel?.image = '';
+                            _api
+                                .updateUser(userModel?.toMap() ?? {},
+                                    userModel?.id ?? -1)
+                                .then((value) {
+                              if (value) {
+                                loadScreen();
+                                SnackBarService.instance.showSnackBarSuccess(
+                                    'Profile image removed');
+                              } else {
+                                SnackBarService.instance
+                                    .showSnackBarError('Failed to update');
+                              }
+                            });
+                            return;
+                        }
+                      },
+                      child: Container(
+                        width: 30,
+                        height: 30,
+                        decoration: BoxDecoration(
+                          color: secondary,
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: Colors.white,
+                            width: 3,
+                          ),
+                        ),
+                        child: const Icon(
+                          Icons.edit,
+                          color: Colors.white,
+                          size: 10,
+                        ),
                       ),
                     ),
-                  ],
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: defaultPadding),
-                  child: Row(
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              flex: 2,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
                     children: [
-                      const Icon(
-                        Icons.call_outlined,
-                        size: 15,
-                        color: primary,
+                      horizontalGap(defaultPadding),
+                      Expanded(
+                        child: Text(
+                          userModel?.fullName ?? '',
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineSmall
+                              ?.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
+                        ),
                       ),
-                      horizontalGap(defaultPadding / 2),
-                      Text(
-                        userModel?.mobileNo ?? '',
-                        style:
-                            Theme.of(context).textTheme.titleMedium?.copyWith(),
+                      IconButton(
+                        onPressed: () {
+                          showEditNamePopup(context);
+                        },
+                        icon: const Icon(
+                          Icons.edit,
+                          size: 20,
+                          color: secondary,
+                        ),
                       ),
                     ],
                   ),
-                )
-              ],
-            ),
-          )
-        ],
+                  Padding(
+                    padding: const EdgeInsets.only(left: defaultPadding),
+                    child: Row(
+                      children: [
+                        const Icon(
+                          Icons.call_outlined,
+                          size: 15,
+                          color: primary,
+                        ),
+                        horizontalGap(defaultPadding / 2),
+                        Text(
+                          userModel?.mobileNo ?? '',
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleMedium
+                              ?.copyWith(),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

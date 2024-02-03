@@ -1,9 +1,11 @@
 import 'package:flashy_tab_bar2/flashy_tab_bar2.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:propertycp_customer/screens/favourite/favourite_screen.dart';
 import 'package:propertycp_customer/screens/leads/lead_screen.dart';
 import 'package:propertycp_customer/screens/profile/profile_screen.dart';
+import '../../widgets/responsive.dart';
 import '../home/home_screen.dart';
 
 class HomeContainer extends StatefulWidget {
@@ -27,73 +29,35 @@ class _HomeContainerState extends State<HomeContainer> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: getBody(),
-      bottomNavigationBar: FlashyTabBar(
-        selectedIndex: _selectedIndex,
-        showElevation: true,
-        onItemSelected: (index) => switchTabs(index),
-        items: [
-          FlashyTabBarItem(
-            icon: const Icon(
-              LineAwesomeIcons.home,
+      bottomNavigationBar: Responsive.isDesktop(context)
+          ? null
+          : FlashyTabBar(
+              selectedIndex: _selectedIndex,
+              showElevation: true,
+              onItemSelected: (index) => switchTabs(index),
+              items: [
+                FlashyTabBarItem(
+                  icon: const Icon(
+                    LineAwesomeIcons.home,
+                  ),
+                  title: const Text('Home'),
+                ),
+                // FlashyTabBarItem(
+                //   icon: const Icon(Icons.real_estate_agent_outlined),
+                //   title: const Text('Leads'),
+                // ),
+                FlashyTabBarItem(
+                  icon: const Icon(LineAwesomeIcons.heart),
+                  title: const Text('Favourite'),
+                ),
+                FlashyTabBarItem(
+                  icon: const Icon(LineAwesomeIcons.user),
+                  title: const Text('Profile'),
+                ),
+              ],
             ),
-            title: const Text('Home'),
-          ),
-          // FlashyTabBarItem(
-          //   icon: const Icon(Icons.real_estate_agent_outlined),
-          //   title: const Text('Leads'),
-          // ),
-          FlashyTabBarItem(
-            icon: const Icon(LineAwesomeIcons.heart),
-            title: const Text('Favourite'),
-          ),
-          FlashyTabBarItem(
-            icon: const Icon(LineAwesomeIcons.user),
-            title: const Text('Profile'),
-          ),
-        ],
-      ),
     );
   }
-
-  // @override
-  // Widget build(BuildContext context) {
-  //   return Scaffold(
-  //     body: getBody(),
-  //     bottomNavigationBar: BottomNavigationBar(
-  //       type: BottomNavigationBarType.fixed,
-  //       currentIndex: _selectedIndex,
-
-  //       selectedLabelStyle: const TextStyle(color: primary),
-  //       onTap: (index) => switchTabs(index),
-  //       items: const [
-  //         BottomNavigationBarItem(
-  //           icon: Icon(
-  //             LineAwesomeIcons.home,
-  //           ),
-  //           label: 'Home',
-  //         ),
-  //         BottomNavigationBarItem(
-  //           icon: Icon(
-  //             LineAwesomeIcons.home,
-  //           ),
-  //           label: 'Leads',
-  //         ),
-  //         BottomNavigationBarItem(
-  //           icon: Icon(
-  //             LineAwesomeIcons.home,
-  //           ),
-  //           label: 'Favourite',
-  //         ),
-  //         BottomNavigationBarItem(
-  //           icon: Icon(
-  //             LineAwesomeIcons.home,
-  //           ),
-  //           label: 'Profile',
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
 
   getBody() {
     switch (_selectedIndex) {
