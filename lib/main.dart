@@ -54,7 +54,7 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'PropertyCP',
+        title: 'PropSo',
         theme: ThemeData(
           useMaterial3: false,
           elevatedButtonTheme: const ElevatedButtonThemeData(
