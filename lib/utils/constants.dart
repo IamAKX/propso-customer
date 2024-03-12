@@ -47,7 +47,7 @@ List<PropertyTypeModel> propertyType = [
       id: 4, name: 'Farmlands', iconPath: 'assets/images/farmland.png'),
   PropertyTypeModel(
       id: 5,
-      name: 'Commercial\nProperties',
+      name: 'Commercial Properties',
       iconPath: 'assets/images/commercial.png'),
   PropertyTypeModel(
       id: 6, name: 'Investments', iconPath: 'assets/images/investment.png'),

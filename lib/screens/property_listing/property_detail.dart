@@ -131,16 +131,17 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
               child: CircularProgressIndicator(),
             )
           : getBody(context),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: secondary,
+      floatingActionButton: ElevatedButton(
         onPressed: () {
           Navigator.pushNamed(context, EnquiryScreen.routePath,
               arguments: widget.propertyId);
         },
-        child: const Icon(
-          Icons.question_mark_rounded,
-          color: Colors.white,
-          size: 35,
+        child: Text(
+          'ENQUIRE NOW!',
+          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
         ),
       ),
     );
